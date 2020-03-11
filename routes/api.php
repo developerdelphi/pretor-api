@@ -23,6 +23,7 @@ Route::middleware('api')->group(function () {
         Route::ApiResource('areas', 'AreasController');
         Route::ApiResource('entities', 'EntitiesController');
         Route::ApiResource('kinds', 'KindsController');
+        Route::ApiResource('personas', 'PersonasController');
     });
 });
 

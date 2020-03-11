@@ -22,4 +22,15 @@ class Area extends Model
     {
         return $this->hasMany(Kind::class);
     }
+
+    /**
+     * Scope a query to only limit fields to response.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeMinSelect($query)
+    {
+        return $query->select('id', 'name', 'origin');
+    }
 }

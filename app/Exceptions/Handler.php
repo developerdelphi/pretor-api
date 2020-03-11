@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -54,6 +55,11 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
                 'error' => 'Registro(s) para classe ' . str_replace('App\\Models\\', '', $exception->getModel()) . ' não localizado(s).'
+            ], 404);
+        }
+        if ($exception instanceof MethodNotAllowedHttpException) {
+            return response()->json([
+                'error' => 'Método http não permitido.'
             ], 404);
         }
 

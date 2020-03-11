@@ -4,22 +4,20 @@ namespace App\Http\Controllers\Api;
 
 use App\Api\ApiMessages;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AreaRequest;
-use App\Http\Resources\AreaResource;
-use App\Models\Area;
+use App\Http\Requests\PersonaRequest;
+use App\Http\Resources\PersonaResource;
+use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
-class AreasController extends Controller
+class PersonasController extends Controller
 {
+    private $persona;
 
-    private $area;
-
-    public function __construct(Area $area)
+    public function __construct(Persona $persona)
     {
-        $this->area = $area;
+        $this->persona = $persona;
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +26,7 @@ class AreasController extends Controller
     public function index(Request $request)
     {
         try {
-            $areas = new Area;
+            $personas = new Persona;
             $search = [];
             $search = Arr::add($search, 'name', $request->has('name') ? $request->get('name') : null);
             $search = Arr::add($search, 'order', $request->has('order') ? $request->get('order') : 'name');
@@ -36,16 +34,16 @@ class AreasController extends Controller
             $search = Arr::add($search, 'per_page', $request->has('per_page') ? $request->get('per_page') : 50);
 
             if ($search['name'] != null) {
-                $areas = $areas->where('name', 'like', '%' . $search['name'] . '%');
+                $personas = $personas->where('name', 'like', '%' . $search['name'] . '%');
             }
             if ($search['order_type'] === 'DESC')
-                $areas = $areas->orderByDesc($search['order']);
+                $personas = $personas->orderByDesc($search['order']);
             else
-                $areas = $areas->orderBy($search['order']);
+                $personas = $personas->orderBy($search['order']);
 
-            $areas = $areas->minSelect()->paginate($search['per_page'])->appends($request->query());
+            $personas = $personas->minSelect()->paginate($search['per_page'])->appends($request->query());
 
-            return new AreaResource($areas);
+            return new PersonaResource($personas);
         } catch (\Exception $e) {
             $messages = new ApiMessages($e->getMessage());
             return response()->json($messages->getMessage(), 400);
@@ -58,10 +56,10 @@ class AreasController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(AreaRequest $request)
+    public function store(PersonaRequest $request)
     {
         try {
-            $this->area->create($request->all());
+            $this->persona->create($request->all());
 
             return response()->json([
                 'data' => [
@@ -80,14 +78,11 @@ class AreasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Persona $persona)
     {
         try {
-            $area = $this->area->find($id);
-            if ($area) return new AreaResource($area);
-            else return response()->json([
-                'error' => 'Não foi possível localizar o registro.'
-            ], 400);
+            //$persona = $this->persona->minSelect()->get();
+            return new PersonaResource($persona);
         } catch (\Exception $e) {
             $messages = new ApiMessages($e->getMessage());
             return response()->json($messages->getMessage(), 400);
@@ -101,11 +96,10 @@ class AreasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(AreaRequest $request, Area $area)
+    public function update(PersonaRequest $request, Persona $persona)
     {
         try {
-            //$area = $this->area->findOrFail($id);
-            $area->update($request->all());
+            $persona->update($request->all());
             return response()->json([
                 'data' => [
                     'message' => 'Registro atualizado.'
@@ -123,11 +117,10 @@ class AreasController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Area $area)
+    public function destroy(Persona $persona)
     {
         try {
-            // $area = $this->area->findOrFail($id);
-            $area->delete();
+            $persona->delete();
 
             return response()->json([
                 'data' => [

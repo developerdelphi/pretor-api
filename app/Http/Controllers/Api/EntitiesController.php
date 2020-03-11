@@ -42,7 +42,7 @@ class EntitiesController extends Controller
             else
                 $entities = $entities->orderBy($search['order']);
 
-            $entities = $entities->select('id', 'name')->paginate($search['per_page'])->appends($request->query());
+            $entities = $entities->minSelect()->paginate($search['per_page'])->appends($request->query());
 
             return new EntityResource($entities);
         } catch (\Exception $e) {
@@ -82,7 +82,7 @@ class EntitiesController extends Controller
     public function show(Entity $entity)
     {
         try {
-            return new entityResource($entity);
+            return new EntityResource($entity);
         } catch (\Exception $e) {
             $messages = new ApiMessages($e->getMessage());
             return response()->json($messages->getMessage(), 400);

@@ -24,7 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Schema::defaultStringLength(191);
         //limitar a criação de fields string a 191 caracteres
         Schema::defaultStringLength(191);
 

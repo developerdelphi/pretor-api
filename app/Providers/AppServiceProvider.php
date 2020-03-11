@@ -25,5 +25,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        //limitar a criação de fields string a 191 caracteres
+        Schema::defaultStringLength(191);
+
+        // Faker em portugues
+        $this->app->singleton(\Faker\Generator::class, function () {
+            return \Faker\Factory::create('pt_BR');
+        });
     }
 }

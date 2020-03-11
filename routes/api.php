@@ -17,6 +17,16 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', function(){
-    return ['msg' => 'Resposta da API'];
+Route::middleware('api')->group(function () {
+
+    Route::namespace('Api')->group(function () {
+        Route::ApiResource('areas', 'AreasController');
+        Route::ApiResource('entities', 'EntitiesController');
+    });
+});
+
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Page Not Found. If error persists, contact suport'
+    ], 404);
 });

@@ -22,6 +22,7 @@ Route::middleware('api')->group(function () {
     Route::namespace('Api')->group(function () {
         Route::ApiResource('areas', 'AreasController');
         Route::ApiResource('entities', 'EntitiesController');
+        Route::ApiResource('kinds', 'KindsController');
     });
 });
 

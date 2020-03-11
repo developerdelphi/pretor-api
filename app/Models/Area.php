@@ -17,4 +17,9 @@ class Area extends Model
         'created_at' => 'date:d/m/Y H:m:s',
         'updated_at' => 'date:d/m/Y H:m:s',
     ];
+
+    public function kinds()
+    {
+        return $this->hasMany(Kind::class);
+    }
 }

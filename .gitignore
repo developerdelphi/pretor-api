@@ -11,3 +11,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 artisan
+.editorconfig
+.styleci.yml
+.gitattributes
+.env.example

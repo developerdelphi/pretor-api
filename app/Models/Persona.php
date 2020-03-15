@@ -12,11 +12,12 @@ class Persona extends Model
     protected $fillable = ['name', 'qualifications', 'address', 'phones'];
 
     protected $casts = [
-        'qualifications' => 'array',
-        'address' => 'array',
-        'phones' => 'array',
+        'qualifications' => 'json',
+        'address' => 'json',
+        'phones' => 'json',
 
     ];
+    // TODO: Pesquisar sobre overflow em filds json: https://github.com/CraftLogan/Laravel-Overflow
 
     public function scopeMinSelect($query)
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\DB;
 
 class PersonaRequest extends FormRequest
 {
@@ -32,8 +33,21 @@ class PersonaRequest extends FormRequest
         */
         return [
             'name' => 'required|string|min:3|max:50',
-            'qualifications.*.cpf' => 'unique:personas,JSON_SEARCH(qualifications, docs, 123.456.789-10)',
-
+            'qualifications.*.cpf' => [
+                'filled',
+                function ($attribute, $value, $fail) {
+                    $cpfExist = DB::table('personas')
+                        ->where('qualifications->docs->cpf', $value)
+                        ->first();
+                    if ($cpfExist) {
+                        if (($this->method() == 'PATH') || ($this->method() == 'PUT')) {
+                            if ($this->persona->id != $cpfExist->id)
+                                $fail('CPF cadastrado no sistema.');
+                        }
+                        $fail('CPF cadastrado no sistema.');
+                    }
+                }
+            ],
         ];
     }
 
@@ -49,6 +63,7 @@ class PersonaRequest extends FormRequest
     {
         return [
             'qualifications.*.cpf.required' => ':attribute não informado',
+            'qualifications.*.cpf.filled' => ':attribute é obrigatório',
             'name.required' => ':attribute não informado',
             'name.string' => 'Tipo de dado para :attribute é inválido',
             'name.min' => 'A informação para :attribute parece ser muito pequena',

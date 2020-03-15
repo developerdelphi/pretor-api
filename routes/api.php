@@ -17,13 +17,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('api')->group(function () {
+Route::namespace('Api')->group(function () {
+    Route::post('login', 'Auth\JwtController@login')->name('login');
 
-    Route::namespace('Api')->group(function () {
+    Route::middleware('jwt.auth')->group(function () {
         Route::ApiResource('areas', 'AreasController');
         Route::ApiResource('entities', 'EntitiesController');
         Route::ApiResource('kinds', 'KindsController');
         Route::ApiResource('personas', 'PersonasController');
+
+        Route::post('logout', 'Auth\JwtController@logout')->name('logout');
+        Route::post('refresh', 'Auth\JwtController@refresh')->name('fresh');
+        Route::post('me', 'Auth\JwtController@me')->name('me');
     });
 });
 

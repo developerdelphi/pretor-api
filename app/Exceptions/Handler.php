@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -52,15 +53,23 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof ModelNotFoundException) {
-            return response()->json([
-                'error' => 'Registro(s) para classe ' . str_replace('App\\Models\\', '', $exception->getModel()) . ' não localizado(s).'
-            ], 404);
-        }
-        if ($exception instanceof MethodNotAllowedHttpException) {
-            return response()->json([
-                'error' => 'Método http não permitido.'
-            ], 404);
+        switch (true) {
+            case $exception instanceof ModelNotFoundException:
+                return response()->json([
+                    'error' => 'Registro(s) para classe ' . str_replace('App\\Models\\', '', $exception->getModel()) . ' não localizado(s).'
+                ], 404);
+                break;
+            case $exception instanceof MethodNotAllowedHttpException:
+                return response()->json([
+                    'error' => 'Método http não permitido.'
+                ], 404);
+                break;
+
+            case $exception instanceof UnauthorizedHttpException:
+                return response()->json([
+                    'error' => 'Usuário não autenticado.'
+                ], 401);
+                break;
         }
 
         return parent::render($request, $exception);
